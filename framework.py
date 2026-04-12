@@ -237,10 +237,14 @@ class TestRunner:
 if __name__ == "__main__":
     loader = TestLoader()
 
+    test_case_suite = loader.make_suite(TestCaseTest)
+    test_suite_suite = loader.make_suite(TestSuiteTest)
+    test_loader_suite = loader.make_suite(TestLoaderTest)
+
     suite = TestSuite()
-    suite.add_test(loader.make_suite(TestCaseTest))
-    suite.add_test(loader.make_suite(TestSuiteTest))
-    suite.add_test(loader.make_suite(TestLoaderTest))
+    suite.add_test(test_case_suite)
+    suite.add_test(test_suite_suite)
+    suite.add_test(test_loader_suite)
 
     runner = TestRunner()
     runner.run(suite)
