@@ -45,6 +45,48 @@ class TestResult:
     def summary(self):
         return f'{self.run_count} run, {len(self.failures)} failed, {len(self.errors)} error'
 
+class TestStub(TestCase):
+
+    def test_success(self):
+        assert True
+
+    def test_failure(self):
+        assert False
+
+    def test_error(self):
+        raise Exception
+
+class TestCaseTest(TestCase):
+
+    def set_up(self):
+        self.result = TestResult()
+
+    def test_result_success_run(self):
+        stub = TestStub('test_success')
+        stub.run(self.result)
+        assert self.result.summary() == '1 run, 0 failed, 0 error'
+
+    def test_result_failure_run(self):
+        stub = TestStub('test_failure')
+        stub.run(self.result)
+        assert self.result.summary() == '1 run, 1 failed, 0 error'
+
+    def test_result_error_run(self):
+        stub = TestStub('test_error')
+        stub.run(self.result)
+        assert self.result.summary() == '1 run, 0 failed, 1 error'
+
+    def test_result_multiple_run(self):
+        stub = TestStub('test_success')
+        stub.run(self.result)
+
+        stub = TestStub('test_failure')
+        stub.run(self.result)
+
+        stub = TestStub('test_error')
+        stub.run(self.result)
+
+        assert self.result.summary() == '3 run, 1 failed, 1 error'
 
 class MyTest(TestCase):
 
@@ -54,6 +96,17 @@ class MyTest(TestCase):
 
 if __name__ == "__main__":
     result = TestResult()
-    test = MyTest('test_ok')
+
+    test = TestCaseTest('test_result_success_run')
     test.run(result)
+
+    test = TestCaseTest('test_result_failure_run')
+    test.run(result)
+
+    test = TestCaseTest('test_result_error_run')
+    test.run(result)
+
+    test = TestCaseTest('test_result_multiple_run')
+    test.run(result)
+
     print(result.summary())
