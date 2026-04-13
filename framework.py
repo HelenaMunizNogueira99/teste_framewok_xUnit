@@ -20,6 +20,22 @@ class TestCase:
 
     def tear_down(self):
         pass
+        
+    def assert_equal(self, first, second):
+        if first != second:
+            raise AssertionError(f"{first} != {second}")
+
+    def assert_true(self, expr):
+        if not expr:
+            raise AssertionError(f"{expr} is not true")
+
+    def assert_false(self, expr):
+        if expr:
+            raise AssertionError(f"{expr} is not false")
+
+    def assert_in(self, member, container):
+        if member not in container:
+            raise AssertionError(f"{member} not found in {container}")
 
 
 class TestResult:
@@ -107,6 +123,20 @@ class TestCaseTest(TestCase):
         spy = TestSpy('test_method')
         spy.run(self.result)
         assert spy.log == "set_up test_method tear_down"
+        
+    def test_assert_true(self):
+        self.assert_true(True)
+
+    def test_assert_false(self):
+        self.assert_false(False)
+
+    def test_assert_equal(self):
+        self.assert_equal("a", "a")
+        self.assert_equal([], [])
+
+    def test_assert_in(self):
+        self.assert_in("a", "abc")
+        self.assert_in(1, [1, 2, 3])
 
 class TestSuite:
 
